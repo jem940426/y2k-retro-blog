@@ -18,7 +18,10 @@ const HomePage = async () => {
           {/* 타이틀 바 */}
           <div className="bg-[var(--color-y2k-pink-main)] px-2 py-1.5 flex justify-between items-center select-none">
             <span className="font-bold text-[10px] text-white tracking-widest leading-none drop-shadow-[1px_1px_0px_rgba(0,0,0,0.2)]">Profile.exe</span>
-            <div className="flex gap-1">
+            <div className="flex gap-1 items-center">
+              <Link href="/login" className="px-1 text-[8px] font-bold text-white hover:text-[#ffe6f0] underline decoration-dashed mr-1">
+                Admin
+              </Link>
               <button className="w-[14px] h-[14px] bg-[#ffe6f0] border border-[var(--color-y2k-border)] flex items-center justify-center font-black text-[8px] text-[var(--color-y2k-pink-dark)] leading-none hover:bg-white">-</button>
               <button className="w-[14px] h-[14px] bg-[#ffe6f0] border border-[var(--color-y2k-border)] flex items-center justify-center font-black text-[8px] text-[var(--color-y2k-pink-dark)] leading-none hover:bg-white">X</button>
             </div>
