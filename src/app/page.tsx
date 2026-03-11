@@ -1,8 +1,15 @@
 import Link from 'next/link';
 import { getPosts } from '@/application/useCases/getPost';
 
-const HomePage = async () => {
+const HomePage = async ({ searchParams }: { searchParams: Promise<{ page?: string }> }) => {
+  const resolvedSearchParams = await searchParams;
   const posts = await getPosts();
+  
+  const currentPage = Number(resolvedSearchParams?.page) || 1;
+  const POSTS_PER_PAGE = 10;
+  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE) || 1;
+  const paginatedPosts = posts.slice((currentPage - 1) * POSTS_PER_PAGE, currentPage * POSTS_PER_PAGE);
+
   return (
     <div className="flex items-center justify-center w-full h-full relative z-10 px-8">
       
@@ -19,6 +26,9 @@ const HomePage = async () => {
           <div className="bg-[var(--color-y2k-pink-main)] px-2 py-1.5 flex justify-between items-center select-none">
             <span className="font-bold text-[10px] text-white tracking-widest leading-none drop-shadow-[1px_1px_0px_rgba(0,0,0,0.2)]">Profile.exe</span>
             <div className="flex gap-1 items-center">
+              <Link href="/write" className="px-1 text-[8px] font-bold text-white hover:text-[#ffe6f0] underline decoration-dashed mr-1">
+                Write
+              </Link>
               <Link href="/login" className="px-1 text-[8px] font-bold text-white hover:text-[#ffe6f0] underline decoration-dashed mr-1">
                 Admin
               </Link>
@@ -59,7 +69,7 @@ const HomePage = async () => {
             {/* 통계 위젯 */}
             <div className="mt-auto bg-[#fff0f5] border-2 border-[var(--color-y2k-border)] p-2 text-center shadow-[inset_1px_1px_0px_white,inset_-1px_-1px_0px_#e6ccda]">
               <div className="text-[9px] text-[#888] font-bold">Total Posts</div>
-              <div className="text-[14px] font-black text-[var(--color-y2k-pink-dark)] drop-shadow-[1px_1px_0px_white]">42</div>
+              <div className="text-[14px] font-black text-[var(--color-y2k-pink-dark)] drop-shadow-[1px_1px_0px_white]">{posts.length}</div>
             </div>
           </div>
         </div>
@@ -87,12 +97,12 @@ const HomePage = async () => {
 
             {/* 게시글 카드 리스트 */}
             <div className="flex-1 flex flex-col gap-3 overflow-y-auto">
-              {posts.length === 0 ? (
+              {paginatedPosts.length === 0 ? (
                 <div className="text-center text-[12px] text-[#888] py-10">
                   작성된 게시글이 없습니다. 첫 글을 작성해보세요!
                 </div>
               ) : (
-                posts.map((post) => (
+                paginatedPosts.map((post) => (
                   <div key={post.id} className="bg-white border-2 border-[#e6ccda] p-3 flex gap-4 hover:border-[var(--color-y2k-pink-main)] hover:shadow-[2px_2px_0px_0px_rgba(255,153,204,0.5)] transition-all cursor-pointer group">
                     <div className="w-[80px] h-[80px] shrink-0 bg-[#fff0f5] border border-[var(--color-y2k-pink-bg)] flex items-center justify-center text-3xl">
                       {post.emoji}
@@ -116,21 +126,29 @@ const HomePage = async () => {
 
             {/* 픽셀 스타일 페이지네이션 */}
             <div className="mt-6 flex justify-center gap-1">
-              <button className="bg-[#e6ebf5] border-t-white border-l-white border-b-[#888] border-r-[#888] border-2 px-2 py-1 text-[9px] font-bold text-[#555] active:border-t-[#888] active:border-l-[#888] active:border-b-white active:border-r-white">
-                ◀ Prev
-              </button>
-              <button className="bg-[#ff99cc] border-t-[#ffd1dc] border-l-[#ffd1dc] border-b-[var(--color-y2k-pink-dark)] border-r-[var(--color-y2k-pink-dark)] border-2 px-2 py-1 text-[9px] font-bold text-white shadow-inner">
-                1
-              </button>
-              <button className="bg-[#e6ebf5] border-t-white border-l-white border-b-[#888] border-r-[#888] border-2 px-2 py-1 text-[9px] font-bold text-[#555] active:border-t-[#888] active:border-l-[#888] active:border-b-white active:border-r-white hover:bg-white">
-                2
-              </button>
-              <button className="bg-[#e6ebf5] border-t-white border-l-white border-b-[#888] border-r-[#888] border-2 px-2 py-1 text-[9px] font-bold text-[#555] active:border-t-[#888] active:border-l-[#888] active:border-b-white active:border-r-white hover:bg-white">
-                3
-              </button>
-              <button className="bg-[#e6ebf5] border-t-white border-l-white border-b-[#888] border-r-[#888] border-2 px-2 py-1 text-[9px] font-bold text-[#555] active:border-t-[#888] active:border-l-[#888] active:border-b-white active:border-r-white hover:bg-white">
-                Next ▶
-              </button>
+              {currentPage > 1 && (
+                <Link href={`/?page=${currentPage - 1}`} className="bg-[#e6ebf5] border-t-white border-l-white border-b-[#888] border-r-[#888] border-2 px-2 py-1 text-[9px] font-bold text-[#555] active:border-t-[#888] active:border-l-[#888] active:border-b-white active:border-r-white hover:bg-white">
+                  ◀ Prev
+                </Link>
+              )}
+              
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                <Link 
+                  key={pageNum}
+                  href={`/?page=${pageNum}`}
+                  className={pageNum === currentPage 
+                    ? "bg-[#ff99cc] border-t-[#ffd1dc] border-l-[#ffd1dc] border-b-[var(--color-y2k-pink-dark)] border-r-[var(--color-y2k-pink-dark)] border-2 px-2 py-1 text-[9px] font-bold text-white shadow-inner block"
+                    : "bg-[#e6ebf5] border-t-white border-l-white border-b-[#888] border-r-[#888] border-2 px-2 py-1 text-[9px] font-bold text-[#555] active:border-t-[#888] active:border-l-[#888] active:border-b-white active:border-r-white hover:bg-white block"}
+                >
+                  {pageNum}
+                </Link>
+              ))}
+
+              {currentPage < totalPages && (
+                <Link href={`/?page=${currentPage + 1}`} className="bg-[#e6ebf5] border-t-white border-l-white border-b-[#888] border-r-[#888] border-2 px-2 py-1 text-[9px] font-bold text-[#555] active:border-t-[#888] active:border-l-[#888] active:border-b-white active:border-r-white hover:bg-white">
+                  Next ▶
+                </Link>
+              )}
             </div>
 
           </div>
