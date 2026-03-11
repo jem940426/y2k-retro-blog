@@ -1,9 +1,14 @@
 import Link from 'next/link';
 import { getPosts } from '@/application/useCases/getPost';
+import { getProfile } from '@/application/useCases/profile';
+import { getCategories } from '@/application/useCases/category';
+import ProfileAdminToolbar from '@/presentation/components/ProfileAdminToolbar';
 
 const HomePage = async ({ searchParams }: { searchParams: Promise<{ page?: string }> }) => {
   const resolvedSearchParams = await searchParams;
   const posts = await getPosts();
+  const profile = await getProfile();
+  const categories = await getCategories();
   
   const currentPage = Number(resolvedSearchParams?.page) || 1;
   const POSTS_PER_PAGE = 10;
@@ -26,6 +31,7 @@ const HomePage = async ({ searchParams }: { searchParams: Promise<{ page?: strin
           <div className="bg-[var(--color-y2k-pink-main)] px-2 py-1.5 flex justify-between items-center select-none">
             <span className="font-bold text-[10px] text-white tracking-widest leading-none drop-shadow-[1px_1px_0px_rgba(0,0,0,0.2)]">Profile.exe</span>
             <div className="flex gap-1 items-center">
+              <ProfileAdminToolbar profile={profile} categories={categories} />
               <Link href="/write" className="px-1 text-[8px] font-bold text-white hover:text-[#ffe6f0] underline decoration-dashed mr-1">
                 Write
               </Link>
@@ -42,11 +48,11 @@ const HomePage = async ({ searchParams }: { searchParams: Promise<{ page?: strin
             {/* 프로필 이미지(더미) & 상태 */}
             <div className="flex flex-col items-center mb-6">
               <div className="w-20 h-20 bg-[#ffd1dc] border-2 border-[var(--color-y2k-pink-main)] flex items-center justify-center text-4xl mb-3 shadow-[2px_2px_0px_0px_rgba(255,153,204,1)]">
-                🎀
+                {profile?.emoji || '🎀'}
               </div>
-              <h2 className="font-bold text-[12px] text-[var(--color-y2k-pink-dark)] mb-1">방돌이의 비밀기지</h2>
+              <h2 className="font-bold text-[12px] text-[var(--color-y2k-pink-dark)] mb-1">{profile?.nickname || '방돌이의 비밀기지'}</h2>
               <div className="text-[9px] text-[#666] bg-white border border-[#ccc] px-2 py-1 w-full text-center">
-                오늘의 TMI: 피곤하다 (｡•́︿•̀｡)
+                {profile?.tmi || '오늘의 TMI: 설정된 메시지가 없습니다.'}
               </div>
             </div>
 
@@ -54,15 +60,13 @@ const HomePage = async ({ searchParams }: { searchParams: Promise<{ page?: strin
             <div className="flex-1">
               <h3 className="text-[10px] font-bold text-[var(--color-y2k-pink-main)] mb-2 border-b-2 border-dashed border-[var(--color-y2k-pink-bg)] pb-1">Categories</h3>
               <ul className="flex flex-col gap-2">
-                <li className="flex items-center gap-2 text-[11px] hover:text-[var(--color-y2k-pink-dark)] cursor-pointer bg-white border border-[#ffe6f0] p-1.5 hover:bg-[#fff0f5]">
-                  <span className="text-[14px]">📁</span> 일상 다이어리 기록
-                </li>
-                <li className="flex items-center gap-2 text-[11px] hover:text-[var(--color-y2k-pink-dark)] cursor-pointer bg-white border border-[#ffe6f0] p-1.5 hover:bg-[#fff0f5]">
-                  <span className="text-[14px]">📁</span> 개발 공부 스니펫
-                </li>
-                <li className="flex items-center gap-2 text-[11px] hover:text-[var(--color-y2k-pink-dark)] cursor-pointer bg-white border border-[#ffe6f0] p-1.5 hover:bg-[#fff0f5]">
-                  <span className="text-[14px]">📁</span> 몽글몽글 생각 보관함
-                </li>
+                {categories.length > 0 ? categories.map(cat => (
+                  <li key={cat.id} className="flex items-center gap-2 text-[11px] hover:text-[var(--color-y2k-pink-dark)] cursor-pointer bg-white border border-[#ffe6f0] p-1.5 hover:bg-[#fff0f5]">
+                    <span className="text-[14px]">{cat.icon || '📁'}</span> {cat.name}
+                  </li>
+                )) : (
+                  <li className="text-[10px] text-gray-500">카테고리가 없습니다.</li>
+                )}
               </ul>
             </div>
 
