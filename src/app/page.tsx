@@ -16,7 +16,7 @@ const HomePage = async ({ searchParams }: { searchParams: Promise<{ page?: strin
   const paginatedPosts = posts.slice((currentPage - 1) * POSTS_PER_PAGE, currentPage * POSTS_PER_PAGE);
 
   return (
-    <div className="flex flex-col md:flex-row items-center justify-center w-full min-h-full py-10 md:py-0 relative z-10 px-4 md:px-8 gap-8 md:gap-0">
+    <div className="flex flex-col md:flex-row items-center md:items-start justify-center w-full py-10 relative z-10 px-4 md:px-8 gap-8 md:gap-4 md:pt-20">
       
       {/* 장식 요소들 */}
       <div className="hidden md:block absolute top-[15%] left-[15%] text-[var(--color-y2k-pink-main)] text-3xl rotate-12 drop-shadow-sm">✦</div>
