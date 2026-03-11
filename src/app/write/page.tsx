@@ -1,18 +1,30 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Editor } from '@/presentation/components/Editor';
 import { savePost } from '@/application/useCases/post';
+import { getCategories } from '@/application/useCases/category';
+import { Category } from '@/domain/models/Category';
 
 export default function WritePage() {
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('일상 다이어리 기록');
+  const [category, setCategory] = useState('');
   const [emoji, setEmoji] = useState('📝');
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const contentRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    getCategories().then(data => {
+      setCategories(data);
+      if (data.length > 0) {
+        setCategory(data[0].name);
+      }
+    });
+  }, []);
 
   const handlePublish = async () => {
     if (!title.trim()) {
@@ -100,9 +112,10 @@ export default function WritePage() {
                   onChange={(e) => setCategory(e.target.value)} 
                   className="w-full border-2 border-[#e6ccda] p-1.5 text-[11px] bg-white text-[#555] focus:outline-none focus:border-[var(--color-y2k-pink-main)] cursor-pointer"
                 >
-                  <option value="일상 다이어리 기록">일상 다이어리 기록</option>
-                  <option value="개발 공부 스니펫">개발 공부 스니펫</option>
-                  <option value="몽글몽글 생각 보관함">몽글몽글 생각 보관함</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.name}>{cat.name}</option>
+                  ))}
+                  {categories.length === 0 && <option value="">카테고리 없음</option>}
                 </select>
               </div>
             </div>
