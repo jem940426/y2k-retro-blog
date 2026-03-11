@@ -17,7 +17,7 @@ const RootLayout = ({ children }: RootLayoutProps) => {
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css" />
       </head>
       <body>
-        <main className="w-full h-screen relative">
+        <main className="w-full min-h-screen relative overflow-x-hidden">
           {children}
         </main>
       </body>

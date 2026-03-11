@@ -18,10 +18,10 @@ const HomePage = async ({ searchParams }: { searchParams: Promise<{ page?: strin
   return (
     <div className="flex flex-col md:flex-row items-center justify-center w-full min-h-full py-10 md:py-0 relative z-10 px-4 md:px-8 gap-8 md:gap-0">
       
-      {/* 장식 요소들 (모바일에서는 숨김 처리 혹은 크기 조절 필요하다면 조정) */}
-      <div className="hidden md:block absolute top-[15%] left-[20%] text-[var(--color-y2k-pink-main)] text-3xl rotate-12 drop-shadow-sm">✦</div>
-      <div className="hidden md:block absolute top-[10%] right-[30%] text-[var(--color-y2k-pink-main)] text-4xl drop-shadow-sm">✿</div>
-      <div className="hidden md:block absolute bottom-[10%] right-[20%] text-[var(--color-y2k-pink-dark)] text-2xl rotate-[-15deg] drop-shadow-sm">💖</div>
+      {/* 장식 요소들 */}
+      <div className="hidden md:block absolute top-[15%] left-[15%] text-[var(--color-y2k-pink-main)] text-3xl rotate-12 drop-shadow-sm">✦</div>
+      <div className="hidden md:block absolute top-[10%] right-[15%] text-[var(--color-y2k-pink-main)] text-4xl drop-shadow-sm">✿</div>
+      <div className="hidden md:block absolute bottom-[10%] right-[10%] text-[var(--color-y2k-pink-dark)] text-2xl rotate-[-15deg] drop-shadow-sm">💖</div>
 
       {/* 왼쪽: 사이드바 윈도우 (카테고리/프로필) - 약간 기울어져 겹치는 효과 (모바일은 기울기 해제) */}
       <div className="w-full max-w-[320px] md:w-[260px] bg-[var(--color-y2k-pink-bg)] p-1 rounded-sm shadow-[4px_4px_0px_0px_rgba(255,102,163,0.3)] z-20 md:transform md:-rotate-2 md:origin-bottom-right md:translate-x-4">
@@ -100,7 +100,7 @@ const HomePage = async ({ searchParams }: { searchParams: Promise<{ page?: strin
             </h1>
 
             {/* 게시글 카드 리스트 */}
-            <div className="flex-1 flex flex-col gap-3 overflow-y-auto">
+            <div className="flex-1 flex flex-col gap-3">
               {paginatedPosts.length === 0 ? (
                 <div className="text-center text-[12px] text-[#888] py-10">
                   작성된 게시글이 없습니다. 첫 글을 작성해보세요!
