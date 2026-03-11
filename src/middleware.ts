@@ -44,7 +44,7 @@ export async function middleware(request: NextRequest) {
   // Auth 관련 리다이렉트 (예시, 로그인 상태면 다시 홈으로)
   if (user && request.nextUrl.pathname.startsWith('/login')) {
       const url = request.nextUrl.clone();
-      url.pathname = '/write';
+      url.pathname = '/';
       return NextResponse.redirect(url);
   }
 

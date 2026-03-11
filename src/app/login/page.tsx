@@ -19,7 +19,7 @@ export default function LoginPage() {
     if (error) {
       setErrorObj('로그인 실패: ' + error.message);
     } else {
-      router.push('/write');
+      router.push('/');
       router.refresh();
     }
   };
