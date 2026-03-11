@@ -10,7 +10,7 @@ export const getPosts = async (): Promise<Post[]> => {
     
   if (error || !data) return [];
   
-  return data.map(item => ({
+  return data.map((item: any) => ({
     id: item.id,
     title: item.title,
     content: item.content,
