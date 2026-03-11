@@ -7,7 +7,7 @@ interface PostDetailProps {
 
 export const PostDetail = ({ post }: PostDetailProps) => {
   return (
-    <div className="flex items-center justify-center w-full h-full relative z-10 px-8">
+    <div className="flex items-center justify-center w-full min-h-screen py-10 md:py-0 relative z-10 px-4 md:px-8">
       {/* 장식 요소들 */}
       <div className="absolute top-[15%] left-[20%] text-[var(--color-y2k-pink-main)] text-3xl rotate-12 drop-shadow-sm">✦</div>
       <div className="absolute top-[10%] right-[30%] text-[var(--color-y2k-pink-main)] text-4xl drop-shadow-sm">✿</div>
