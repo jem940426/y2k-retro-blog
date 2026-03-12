@@ -37,3 +37,23 @@ export const savePost = async (title: string, content: string, category: string,
   
   return { data, error };
 };
+
+export const updatePost = async (id: string, title: string, content: string, category: string, emoji: string) => {
+  const supabase = getSupabaseClient();
+  const { data, error } = await supabase
+    .from('posts')
+    .update({ title, content, category, emoji })
+    .eq('id', id);
+  
+  return { data, error };
+};
+
+export const deletePost = async (id: string) => {
+  const supabase = getSupabaseClient();
+  const { error } = await supabase
+    .from('posts')
+    .delete()
+    .eq('id', id);
+  
+  return { error };
+};

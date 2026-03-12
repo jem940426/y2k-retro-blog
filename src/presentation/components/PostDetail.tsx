@@ -1,16 +1,44 @@
+'use client';
+
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { Post } from '@/domain/models/Post';
+import { deletePost } from '@/application/useCases/post';
+import { getSession } from '@/application/useCases/auth';
 
 interface PostDetailProps {
   post: Post;
 }
 
 export const PostDetail = ({ post }: PostDetailProps) => {
+  const router = useRouter();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    getSession().then(({ session }) => {
+      if (session) setIsAdmin(true);
+    });
+  }, []);
+
+  const handleDelete = async () => {
+    if (confirm('정말로 이 게시글을 삭제할까요? (´•̥ ̯ •̥`)')) {
+      const { error } = await deletePost(post.id);
+      if (error) {
+        alert('삭제에 실패했습니다: ' + error.message);
+      } else {
+        alert('삭제되었습니다! ✖');
+        router.push('/');
+        router.refresh();
+      }
+    }
+  };
+
   return (
     <div className="flex items-center justify-center w-full min-h-screen py-10 md:py-0 relative z-10 px-4 md:px-8">
       {/* 장식 요소들 */}
-      <div className="absolute top-[15%] left-[20%] text-[var(--color-y2k-pink-main)] text-3xl rotate-12 drop-shadow-sm">✦</div>
-      <div className="absolute top-[10%] right-[30%] text-[var(--color-y2k-pink-main)] text-4xl drop-shadow-sm">✿</div>
+      <div className="absolute top-[15%] left-[20%] text-[var(--color-y2k-pink-main)] text-3xl rotate-12 drop-shadow-sm pointer-events-none">✦</div>
+      <div className="absolute top-[10%] right-[30%] text-[var(--color-y2k-pink-main)] text-4xl drop-shadow-sm pointer-events-none">✿</div>
 
       {/* 오른쪽: 메인 피드 윈도우 (게시글 상세 정보 창) */}
       <div className="w-[600px] bg-[var(--color-y2k-pink-bg)] p-1 rounded-sm shadow-[6px_6px_0px_0px_rgba(255,102,163,0.4)] z-10">
@@ -37,7 +65,22 @@ export const PostDetail = ({ post }: PostDetailProps) => {
                    </div>
                    <h1 className="text-[16px] font-bold text-[var(--color-y2k-pink-dark)] tracking-wide">{post.title}</h1>
                 </div>
-                <div className="flex justify-end">
+                <div className="flex justify-between items-end">
+                   <div className="flex gap-2">
+                     {isAdmin && (
+                       <>
+                         <Link href={`/edit/${post.id}`}>
+                           <button className="text-[9px] font-bold text-[var(--color-y2k-pink-main)] hover:text-[var(--color-y2k-pink-dark)] underline decoration-dotted decoration-1 underline-offset-4 cursor-pointer">수정 (Edit)</button>
+                         </Link>
+                         <button 
+                           onClick={handleDelete}
+                           className="text-[9px] font-bold text-[#888] hover:text-[#555] underline decoration-dotted decoration-1 underline-offset-4 cursor-pointer"
+                         >
+                           삭제 (Delete)
+                         </button>
+                       </>
+                     )}
+                   </div>
                    <span className="text-[9px] font-bold text-[#888] tracking-widest">Date: {post.date}</span>
                 </div>
              </div>

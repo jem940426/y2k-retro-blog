@@ -34,8 +34,8 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // /write 경로 접근 시 인증되지 않은 사용자는 /login으로 리다이렉트
-  if (!user && request.nextUrl.pathname.startsWith('/write')) {
+  // /write 및 /edit 경로 접근 시 인증되지 않은 사용자는 /login으로 리다이렉트
+  if (!user && (request.nextUrl.pathname.startsWith('/write') || request.nextUrl.pathname.startsWith('/edit'))) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
@@ -54,6 +54,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/write/:path*',
+    '/edit/:path*',
     '/login/:path*'
   ],
 };
