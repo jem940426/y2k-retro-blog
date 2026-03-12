@@ -20,4 +20,15 @@
     padding: 0;
     font-family: 'Galmuri11', 'Gulim', sans-serif;
   }
+
+  /* 포스트 본문 내 이미지 스타일 */
+  .post-content-area img {
+    cursor: zoom-in;
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  }
+
+  .post-content-area img:hover {
+    opacity: 0.9;
+    transform: scale(1.01);
+  }
 }

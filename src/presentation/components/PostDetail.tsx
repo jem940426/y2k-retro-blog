@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { Post } from '@/domain/models/Post';
 import { deletePost } from '@/application/useCases/post';
 import { getSession } from '@/application/useCases/auth';
+import { ImageModal } from './image-modal';
 
 interface PostDetailProps {
   post: Post;
@@ -14,6 +15,7 @@ interface PostDetailProps {
 export const PostDetail = ({ post }: PostDetailProps) => {
   const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     getSession().then(({ session }) => {
@@ -31,6 +33,17 @@ export const PostDetail = ({ post }: PostDetailProps) => {
         router.push('/');
         router.refresh();
       }
+    }
+  };
+
+  // 본문 내 이미지 클릭 핸들러 (이벤트 위임)
+  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    
+    // 클릭된 요소가 이미지인 경우
+    if (target.tagName === 'IMG') {
+      const imgTarget = target as HTMLImageElement;
+      setSelectedImage(imgTarget.src);
     }
   };
 
@@ -87,8 +100,9 @@ export const PostDetail = ({ post }: PostDetailProps) => {
 
              {/* 게시글 본문 */}
              <div 
-                className="flex-1 text-[13px] text-[#555] leading-[2] whitespace-pre-wrap font-medium overflow-y-auto"
+                className="flex-1 text-[13px] text-[#555] leading-[2] whitespace-pre-wrap font-medium overflow-y-auto post-content-area cursor-zoom-in"
                 dangerouslySetInnerHTML={{ __html: post.content }}
+                onClick={handleContentClick}
              >
              </div>
 
@@ -103,6 +117,14 @@ export const PostDetail = ({ post }: PostDetailProps) => {
           </div>
         </div>
       </div>
+
+      {/* 이미지 확대 모달 */}
+      {selectedImage && (
+        <ImageModal 
+          imageUrl={selectedImage} 
+          onClose={() => setSelectedImage(null)} 
+        />
+      )}
     </div>
   );
 };
