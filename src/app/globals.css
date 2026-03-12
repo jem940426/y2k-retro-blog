@@ -23,7 +23,6 @@
 
   /* 포스트 본문 내 이미지 스타일 */
   .post-content-area img {
-    cursor: zoom-in;
     transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
   }
 

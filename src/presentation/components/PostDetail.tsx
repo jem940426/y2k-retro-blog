@@ -100,7 +100,7 @@ export const PostDetail = ({ post }: PostDetailProps) => {
 
              {/* 게시글 본문 */}
              <div 
-                className="flex-1 text-[13px] text-[#555] leading-[2] whitespace-pre-wrap font-medium overflow-y-auto post-content-area cursor-zoom-in"
+                className="flex-1 text-[13px] text-[#555] leading-[2] whitespace-pre-wrap font-medium overflow-y-auto post-content-area"
                 dangerouslySetInnerHTML={{ __html: post.content }}
                 onClick={handleContentClick}
              >
